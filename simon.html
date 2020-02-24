@@ -42,69 +42,68 @@
     <script src="sweetalert.min.js"></script>
     <script>
       // set num of levels
-      const niveles = 4;
-      let teclas = generarTeclas(niveles);
+      const numOfLevels = 2;
+      let keys = generateKeys(numOfLevels);
 
-      function siguienteNivel(nivelActual) {
-        if (nivelActual == niveles) {
+      function nextLevel(currentLevel) {
+        if (currentLevel == numOfLevels) {
           return swal({
-            title: 'Buen trabajo! Ganaste!',
-            text: 'Has superado todos los niveles',
-            icon: 'success',
-            button: 'Otra?'
+            title: 'Well done!',
+            text: 'You won the game!',
+            icon: 'success'
           });
         }
 
         swal({
-          title: `Nivel ${nivelActual + 1}`,
+          title: `Level ${currentLevel + 1}`,
           icon: 'info',
           buttons: false,
           timer: 1200
         });
 
-        for (let i = 0; i <= nivelActual; i++) {
-          setTimeout(() => activate(teclas[i]), 1000 * (i + 1) + 1000);
+        for (let i = 0; i <= currentLevel; i++) {
+          setTimeout(() => activate(keys[i]), 1000 * (i + 1) + 1000);
         }
 
         let i = 0;
-        let teclaActual = teclas[i];
+        let currentKey = keys[i];
         window.addEventListener('keydown', onkeydown);
 
         function onkeydown(ev) {
-          if (ev.keyCode == teclaActual) {
-            activate(teclaActual, { success: true });
+          if (ev.keyCode == currentKey) {
+            activate(currentKey, { success: true });
             i++;
-            if (i > nivelActual) {
+            if (i > currentLevel) {
               window.removeEventListener('keydown', onkeydown);
-              setTimeout(() => siguienteNivel(i), 1500);
+              setTimeout(() => nextLevel(i), 1500);
             }
-            teclaActual = teclas[i];
+            currentKey = keys[i];
           } else {
             activate(ev.keyCode, { fail: true });
             window.removeEventListener('keydown', onkeydown);
             setTimeout(
               () =>
                 swal({
-                  title: 'Upps..Perdiste',
-                  text: 'Tecla incorrecta lo sentimos.',
+                  title: 'Upps..You lose..',
+                  text: 'Wrong key, sorry :(',
                   icon: 'error'
                 }),
               1000
             );
             // function (ok) {
             //   if (ok) {
-            //     teclas = generarTeclas(niveles)
-            //     siguienteNivel(0)
+            //     keys = generateKeys(numOfLevels)
+            //     nextLevel(0)
             //   }
             // }
           }
         }
       }
 
-      siguienteNivel(0);
+      nextLevel(0);
 
-      function generarTeclas(niveles) {
-        return new Array(niveles).fill(0).map(generarTeclaAleatoria);
+      function generateKeys(numOfLevels) {
+        return new Array(numOfLevels).fill(0).map(generarTeclaAleatoria);
       }
       function generarTeclaAleatoria() {
         const min = 65;
@@ -117,7 +116,7 @@
       }
 
       function activate(keyCode, opts = {}) {
-        // opciones
+        // options
         const el = getElementByKeyCode(keyCode);
         el.classList.add('active');
         if (opts.success) {
